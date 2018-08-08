@@ -10,6 +10,10 @@ import java.util.HashMap;
 public class GamePad implements ControllerListener {
     private HashMap<Integer, Button> buttons;
 
+    public GamePad() {
+        buttons = new HashMap<Integer, Button>();
+    }
+
     @Override
     public void connected(Controller controller) {
 
@@ -26,6 +30,9 @@ public class GamePad implements ControllerListener {
             buttons.put(buttonCode, new Button());
         buttons.get(buttonCode).justPressed = true;
         buttons.get(buttonCode).pressed = true;
+
+        System.out.println(buttonCode);
+
         return false;
     }
 
@@ -65,11 +72,11 @@ public class GamePad implements ControllerListener {
 
 
     public boolean isButtonJustPressed(int buttonCode) {
-        return buttons.get(buttonCode).justPressed;
+        return buttons.containsKey(buttonCode) && buttons.get(buttonCode).justPressed;
     }
 
     public boolean isButtonPressed(int buttonCode) {
-        return buttons.get(buttonCode).pressed;
+        return buttons.containsKey(buttonCode) && buttons.get(buttonCode).pressed;
     }
 
     public void update() {
