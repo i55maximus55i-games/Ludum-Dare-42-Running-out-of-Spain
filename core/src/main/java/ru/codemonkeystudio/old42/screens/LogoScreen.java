@@ -73,11 +73,12 @@ public class LogoScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
+        batch.dispose();
 
     }
 }
