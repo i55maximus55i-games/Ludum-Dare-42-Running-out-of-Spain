@@ -8,8 +8,8 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import ru.codemonkeystudio.old42.screens.LogoScreen;
-import ru.codemonkeystudio.old42.screens.SplashScreen;
+import ru.codemonkeystudio.old42.screens.ActionScreen;
+import ru.codemonkeystudio.old42.screens.StrategyScreen;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ public class Main extends Game {
         game = this;
         shapeRenderer = new ShapeRenderer();
         color = Color.WHITE;
-        setScreen(new LogoScreen(), Color.BLACK, 0.015f);
+        setScreen(new StrategyScreen(), new Color(117f / 255f, 168f / 255f, 231f / 255f, 1), 0.015f);
         blend = -0.3f;
 
         gamePads = new ArrayList<GamePad>();
