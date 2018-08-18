@@ -8,8 +8,9 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import ru.codemonkeystudio.old42.screens.ActionScreen;
+import ru.codemonkeystudio.old42.screens.LogoScreen;
 import ru.codemonkeystudio.old42.screens.StrategyScreen;
+import ru.codemonkeystudio.old42.tools.GamePad;
 
 import java.util.ArrayList;
 
@@ -30,18 +31,26 @@ public class Main extends Game {
     private Screen screen;
 
 
+    public int[] stages;
+    public float difficulty = 1;
+
     @Override
     public void create() {
         game = this;
         shapeRenderer = new ShapeRenderer();
         color = Color.WHITE;
-        setScreen(new StrategyScreen(), new Color(117f / 255f, 168f / 255f, 231f / 255f, 1), 0.015f);
+        setScreen(new LogoScreen(), Color.BLACK, 0.015f);
         blend = -0.3f;
 
         gamePads = new ArrayList<GamePad>();
         for (Controller controller : Controllers.getControllers()) {
             gamePads.add(new GamePad());
             controller.addListener(gamePads.get(gamePads.size() - 1));
+        }
+
+        stages = new int[8];
+        for (int i = 0; i < 8; i++) {
+            stages[i] = 0;
         }
     }
 
@@ -81,11 +90,22 @@ public class Main extends Game {
         for (GamePad gamePad : gamePads) {
             gamePad.update();
         }
+
+        if (gamePads.get(0).isButtonJustPressed(6))
+            restart();
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
         shapeRenderer = new ShapeRenderer();
+    }
+
+    public void restart() {
+        for (int i = 0; i < 8; i++) {
+            stages[i] = 0;
+        }
+        difficulty = 1;
+        setScreen(new LogoScreen());
     }
 }

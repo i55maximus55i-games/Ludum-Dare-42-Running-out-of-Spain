@@ -50,7 +50,7 @@ public class LogoScreen implements Screen {
             elapsed = 0;
         }
         if (timer >= 2.3f && start && flash) {
-            Main.game.setScreen(new LogoScreen(), Color.WHITE, 0.1f);
+            Main.game.setScreen(new StrategyScreen(), new Color(117f / 255f, 168f / 255f, 231f / 255f, 1), 0.1f);
             flash = false;
         }
     }

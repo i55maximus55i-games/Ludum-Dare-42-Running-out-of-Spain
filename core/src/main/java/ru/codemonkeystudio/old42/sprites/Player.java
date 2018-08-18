@@ -1,20 +1,29 @@
 package ru.codemonkeystudio.old42.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import ru.codemonkeystudio.old42.Main;
 import ru.codemonkeystudio.old42.screens.ActionScreen;
 
+import java.util.ArrayList;
+
 public class Player extends Sprite {
 
     public Body body;
+    public int health = 15;
     private int jump = 0;
     private boolean stand = false;
 
+    private Texture texture;
+    private TextureRegion textureRegion;
+
     public Player(World world, Vector2 pos) {
-        super(new Texture("sprites/player.png"));
+        texture = new Texture("sprites/player.png");
+        textureRegion = new TextureRegion(texture, 0 ,0, 128, 128);
 
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -33,16 +42,30 @@ public class Player extends Sprite {
         body.setUserData("player");
     }
 
-    public void update() {
+    public void update(ArrayList<Enemy> enemies, World world) {
         setPosition((body.getPosition().x - 64 / 2 / ActionScreen.SCALE) * ActionScreen.SCALE, (body.getPosition().y - 64 / 2 / ActionScreen.SCALE) * ActionScreen.SCALE);
 
         body.setLinearVelocity(Main.gamePads.get(0).getlStick().x * 70, body.getLinearVelocity().y);
-        if (Main.gamePads.get(0).isButtonJustPressed(0) && jump < 2) {
+        if (Main.gamePads.get(0).isButtonJustPressed(1) && jump < 2) {
             body.setLinearVelocity(body.getLinearVelocity().x, 150);
             jump++;
         }
         if (body.getLinearVelocity().y == 0 && stand)
             jump = 0;
         stand = body.getLinearVelocity().y == 0;
+
+//        if (Main.gamePads.get(0).isButtonJustPressed(0)) {
+//            for (Enemy enemy : enemies) {
+//                if (Math.abs(body.getPosition().x - enemy.body.getPosition().x) * ActionScreen.SCALE <= 72) {
+//                    world.destroyBody(body);
+//                    enemies.remove(enemy);
+//                }
+//            }
+//        }
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        batch.draw(textureRegion, getX(), getY(), 64, 64);
     }
 }

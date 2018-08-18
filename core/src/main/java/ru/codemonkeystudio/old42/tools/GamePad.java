@@ -1,4 +1,4 @@
-package ru.codemonkeystudio.old42;
+package ru.codemonkeystudio.old42.tools;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -12,6 +12,9 @@ public class GamePad implements ControllerListener {
     private HashMap<Integer, Button> buttons;
     private Vector2 lStick = new Vector2();
     private float deathZone = 0.1f;
+
+    private boolean leftJustPressed = false;
+    private boolean rightJustPressed = false;
 
     public GamePad() {
         buttons = new HashMap<Integer, Button>();
@@ -33,9 +36,6 @@ public class GamePad implements ControllerListener {
             buttons.put(buttonCode, new Button());
         buttons.get(buttonCode).justPressed = true;
         buttons.get(buttonCode).pressed = true;
-
-//        System.out.println(buttonCode);
-
         return false;
     }
 
@@ -54,13 +54,15 @@ public class GamePad implements ControllerListener {
             lStick.y = -value;
         if (axisCode == 1)
             lStick.x = value;
-
-//        System.out.println(axisCode + " " + value);
         return false;
     }
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+        if (value == PovDirection.west)
+            leftJustPressed = true;
+        if (value == PovDirection.east)
+            rightJustPressed = true;
         return false;
     }
 
@@ -88,6 +90,22 @@ public class GamePad implements ControllerListener {
         return buttons.containsKey(buttonCode) && buttons.get(buttonCode).pressed;
     }
 
+    public boolean isLeftJustPressed() {
+        if (leftJustPressed) {
+            leftJustPressed = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isRightJustPressed() {
+        if (rightJustPressed) {
+            rightJustPressed = false;
+            return true;
+        }
+        return false;
+    }
+
     public Vector2 getlStick() {
         if (lStick.len() <= 0.2)
             lStick.setZero();
@@ -98,6 +116,8 @@ public class GamePad implements ControllerListener {
         for (Button button : buttons.values()) {
             button.justPressed = false;
         }
+        leftJustPressed = false;
+        rightJustPressed = false;
     }
 
     private class Button {

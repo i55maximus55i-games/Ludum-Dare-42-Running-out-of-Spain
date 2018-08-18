@@ -2,6 +2,7 @@ package ru.codemonkeystudio.old42.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -11,6 +12,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import ru.codemonkeystudio.old42.Main;
 import ru.codemonkeystudio.old42.sprites.Enemy;
 import ru.codemonkeystudio.old42.sprites.Player;
 import ru.codemonkeystudio.old42.tools.ContactHandler;
@@ -24,6 +28,7 @@ public class ActionScreen implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
+    private Viewport viewport;
     private OrthographicCamera camera;
     private SpriteBatch batch;
 
@@ -33,6 +38,16 @@ public class ActionScreen implements Screen {
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
+    private float timer;
+    private float timer2;
+
+
+    int num;
+
+    public ActionScreen(int num) {
+        this.num = num;
+    }
+
     @Override
     public void show() {
         map = new TmxMapLoader().load("maps/map1.tmx");
@@ -41,12 +56,14 @@ public class ActionScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         batch = new SpriteBatch();
+        viewport = new ScreenViewport(camera);
 
         world = new World(new Vector2(0, -400), true);
         world.setContactListener(new ContactHandler());
         createWalls();
         createPlayer();
         createEnemy();
+
         debugRenderer = new Box2DDebugRenderer();
     }
 
@@ -89,11 +106,17 @@ public class ActionScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        timer2 += delta;
         world.step(delta, 120, 10);
 
-        player.update();
+        player.update(enemies, world);
         for (Enemy enemy : enemies)
-            enemy.update(player.body.getPosition().x);
+            enemy.update(player.body.getPosition().x, delta);
+        timer += delta;
+        if (timer * Main.game.difficulty >= 10) {
+            timer = 0;
+            createEnemy();
+        }
 
 
         Vector2 camPos = player.body.getPosition().scl(SCALE);
@@ -121,6 +144,12 @@ public class ActionScreen implements Screen {
             enemy.draw(batch);
         batch.end();
 
+        if (timer2 >= 10) {
+            Main.game.difficulty *= 1.4f;
+            Main.game.setScreen(new StrategyScreen(), new Color(117f / 255f, 168f / 255f, 231f / 255f, 1), 0.05f);
+            timer2 = -100000000;
+        }
+
         debugRenderer.render(world, camera.combined);
     }
 
@@ -128,6 +157,7 @@ public class ActionScreen implements Screen {
     public void resize(int width, int height) {
         float scale = 500f;
 
+        viewport.update(width, height);
         camera.viewportWidth = scale * width / height;
         camera.viewportHeight = scale;
         camera.update();
