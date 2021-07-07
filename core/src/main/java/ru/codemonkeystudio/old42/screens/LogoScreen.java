@@ -1,6 +1,7 @@
 package ru.codemonkeystudio.old42.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -44,7 +45,7 @@ public class LogoScreen implements Screen {
         batch.draw(start ? intro2.getKeyFrame(elapsed) : intro1.getKeyFrame(timer), ((float) - 1920) / x / 2, ((float) - 1080) / x / 2, 1920 / x, 1080 / x);
         batch.end();
 
-        if (Main.gamePads.get(0).isButtonJustPressed(7) && !start) {
+        if ((!Main.gamePads.isEmpty() && Main.gamePads.get(0).isButtonJustPressed(7) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) && !start) {
             start = true;
             timer = 0;
             elapsed = 0;

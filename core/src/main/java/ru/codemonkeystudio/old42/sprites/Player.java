@@ -1,5 +1,7 @@
 package ru.codemonkeystudio.old42.sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -45,8 +47,15 @@ public class Player extends Sprite {
     public void update(ArrayList<Enemy> enemies, World world) {
         setPosition((body.getPosition().x - 64 / 2 / ActionScreen.SCALE) * ActionScreen.SCALE, (body.getPosition().y - 64 / 2 / ActionScreen.SCALE) * ActionScreen.SCALE);
 
-        body.setLinearVelocity(Main.gamePads.get(0).getlStick().x * 70, body.getLinearVelocity().y);
-        if (Main.gamePads.get(0).isButtonJustPressed(1) && jump < 2) {
+        float x = 0f;
+        if (!Main.gamePads.isEmpty()) x += Main.gamePads.get(0).getlStick().x;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) x -= 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) x += 1f;
+        if (x < -1f) x = -1f;
+        if (x > 1f) x = 1f;
+
+        body.setLinearVelocity(x * 70, body.getLinearVelocity().y);
+        if ((!Main.gamePads.isEmpty() && Main.gamePads.get(0).isButtonJustPressed(1) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) && jump < 2) {
             body.setLinearVelocity(body.getLinearVelocity().x, 150);
             jump++;
         }

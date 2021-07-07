@@ -1,5 +1,7 @@
 package ru.codemonkeystudio.old42.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -173,7 +175,7 @@ public class StrategyScreen implements Screen {
             batch.draw(yes, 74, 34);
         batch.end();
 
-        if (Main.gamePads.get(0).isLeftJustPressed()) {
+        if (!Main.gamePads.isEmpty() && Main.gamePads.get(0).isLeftJustPressed() || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             cursor--;
             if (cursor < 0)
                 cursor = 7;
@@ -183,7 +185,7 @@ public class StrategyScreen implements Screen {
                     cursor = 7;
             }
         }
-        if (Main.gamePads.get(0).isRightJustPressed()) {
+        if (!Main.gamePads.isEmpty() && Main.gamePads.get(0).isRightJustPressed() || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
             cursor++;
             if (cursor > 7)
                 cursor = 0;
@@ -194,7 +196,7 @@ public class StrategyScreen implements Screen {
             }
         }
 
-        if (Main.gamePads.get(0).isButtonJustPressed(0)) {
+        if (!Main.gamePads.isEmpty() && Main.gamePads.get(0).isButtonJustPressed(0) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             for (int i = 0; i < 8; i++) {
                 if (Main.game.stages[i] == 1 && i != cursor) {
                     Main.game.stages[i] = 2;

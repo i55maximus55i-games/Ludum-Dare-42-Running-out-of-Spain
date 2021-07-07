@@ -2,6 +2,7 @@ package ru.codemonkeystudio.old42;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -86,13 +87,12 @@ public class Main extends Game {
             color = blendColor;
         }
 
+        if (!gamePads.isEmpty() && gamePads.get(0).isButtonJustPressed(6) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+            restart();
 
         for (GamePad gamePad : gamePads) {
             gamePad.update();
         }
-
-        if (gamePads.get(0).isButtonJustPressed(6))
-            restart();
     }
 
     @Override
